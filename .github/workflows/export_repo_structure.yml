@@ -24,7 +24,7 @@ jobs:
           git ls-tree -r --name-only HEAD > repo-structure.txt  
 
       - name: Upload repository structure as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: repository-structure
           path: repo-structure.txt
