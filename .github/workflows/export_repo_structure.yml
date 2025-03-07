@@ -36,12 +36,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - name: Move repository structure on archive folder to S3 if exists
-        run: |
-          aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt
-          if [ $? -eq 0 ]; then
-            aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/repo-structure.txt
-          fi
+#      - name: Move repository structure on archive folder to S3 if exists
+#        run: |
+#          aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt
+#          if [ $? -eq 0 ]; then
+#            aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/repo-structure.txt
+#          fi
 
       - name: Upload file to S3
         run: |
