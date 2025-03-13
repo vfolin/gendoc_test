@@ -38,9 +38,14 @@ jobs:
 
       - name: Move repository structure on archive folder to S3
         run: |
-          for file in $(aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/ --recursive | awk '{print $4}'); do
-            if [[ ! "$file" =~ /$ ]]; then  # Excludes folders
-              aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/$file s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/$file
+          BUCKET_NAME=${{ vars.BUCKET_NAME }}
+          SOURCE_PREFIX="repositoryStructure/"
+          ARCHIVE_PREFIX="repositoryStructure/archive/"
+
+          aws s3 ls s3://$BUCKET_NAME/$SOURCE_PREFIX --recursive | awk '{print $4}' | while read file; do
+            if [[ $(basename "$file") == "$file" ]]; then
+              echo "Moving file: $file"
+              aws s3 mv s3://$BUCKET_NAME/$file s3://$BUCKET_NAME/$ARCHIVE_PREFIX$(basename "$file")
             fi
           done
 
