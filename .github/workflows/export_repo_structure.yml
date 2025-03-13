@@ -34,13 +34,15 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Move repository structure on archive folder to S3 if exists
         run: |
-          aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt || exit 0
-          aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/repo-structure.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/repo-structure.txt
+          aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/ || exit 0
+          aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/ s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/ --recursive
 
       - name: Upload file to S3
         run: |
-          aws s3 cp repo-structure.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          mv repo-structure.txt repo-structure-${TIMESTAMP}.txt
+          aws s3 cp repo-structure-${TIMESTAMP}.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/
