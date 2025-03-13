@@ -41,8 +41,15 @@ jobs:
           aws s3 ls s3://${{ vars.BUCKET_NAME }}/repositoryStructure/ || exit 0
           aws s3 mv s3://${{ vars.BUCKET_NAME }}/repositoryStructure/ s3://${{ vars.BUCKET_NAME }}/repositoryStructure/archive/ --recursive
 
+      - name: Get AWS Region Timezone
+        run: |
+          AWS_REGION=${{ vars.AWS_REGION }} 
+          TIMEZONE=$(aws ssm get-parameter --name "/aws/service/global-infrastructure/regions/$AWS_REGION/timezone" --query "Parameter.Value" --output text)
+          echo "AWS Timezone: $TIMEZONE"
+          echo "TIMEZONE=$TIMEZONE" >> $GITHUB_ENV
+
       - name: Upload file to S3
         run: |
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          TIMESTAMP=$(TZ="${{ env.TIMEZONE }}" date +%Y%m%d%H%M%S)
           mv repo-structure.txt repo-structure-${TIMESTAMP}.txt
           aws s3 cp repo-structure-${TIMESTAMP}.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/
