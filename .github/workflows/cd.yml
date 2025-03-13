@@ -1,11 +1,13 @@
 name: CD
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'target/**'
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'target/**'
+
+  workflow_dispatch:
 
 jobs:
   copy_docs_files:
