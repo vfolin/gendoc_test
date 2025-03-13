@@ -36,26 +36,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Move repository structure on archive folder to S3
+      - name: Set Commit SHA and Date as GitHub Variables
         run: |
-          BUCKET_NAME=${{ vars.BUCKET_NAME }}
-          SOURCE_PREFIX="repositoryStructure/"
-          ARCHIVE_PREFIX="repositoryStructure/archive/"
-
-          aws s3 ls s3://$BUCKET_NAME/$SOURCE_PREFIX --recursive | awk '{print $4}' | while read file; do
-            if [[ $(basename "$file") == "$file" ]]; then
-              echo "Moving file: $file"
-              aws s3 mv s3://$BUCKET_NAME/$file s3://$BUCKET_NAME/$ARCHIVE_PREFIX$(basename "$file")
-            fi
-          done
-
-      - name: Upload file to S3
-        run: |
-          TIMEZONE=${{ vars.TIMEZONE }} 
-          if [ -z "$TIMEZONE" ]; then
-            echo "TIMEZONE is not set in GitHub Variables. Defaulting to UTC."
-            TIMEZONE="UTC"
+          COMMIT_ID="${GITHUB_SHA}"
+          
+          # Ensure we have a commit SHA
+          if [[ -z "$COMMIT_ID" ]]; then
+            echo "No commit SHA found. Using latest commit from main branch."
+            COMMIT_ID=$(git rev-parse HEAD)
           fi
-          TIMESTAMP=$(TZ="${{ env.TIMEZONE }}" date +%Y%m%d%H%M%S)
-          mv repo-structure.txt repo-structure-${TIMESTAMP}.txt
-          aws s3 cp repo-structure-${TIMESTAMP}.txt s3://${{ vars.BUCKET_NAME }}/repositoryStructure/
+          
+          # Get commit date in YYYY/MM/DD format
+          COMMIT_DATE=$(git show -s --format=%cd --date=format:'%Y/%m/%d' "$COMMIT_ID")
+          
+          echo "Final Commit SHA: $COMMIT_ID"
+          echo "Commit Date: $COMMIT_DATE"
+          
+          echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+
+      - name: Upload file to S3 with Commit ID in YYYY/MM/DD Subfolder
+        run: |
+          FILE_NAME="repo-structure-${{ env.COMMIT_ID }}.txt"
+          TARGET_PATH="repositoryStructure/${{ env.COMMIT_DATE }}/$FILE_NAME"
+          mv repo-structure.txt "$FILE_NAME"
+          aws s3 cp "$FILE_NAME" s3://${{ vars.BUCKET_NAME }}/$TARGET_PATH
