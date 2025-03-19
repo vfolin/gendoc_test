@@ -1,0 +1,44 @@
+name: Export Commit History
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  export-log:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate commit history CSV
+        run: |
+          echo "Hash,Author,Date,Message" > commit-history.csv
+          git log --pretty=format:"%H,%an,%ai,%s" >> commit-history.csv
+
+
+      - name: Upload commit history as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: commit-history
+          path: commit-history.csv
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload file to S3
+        run: |
+          TARGET_PATH="codeChanges/commit-history.csv"
+          aws s3 cp commit-history.csv s3://${{ vars.BUCKET_NAME }}/$TARGET_PATH
