@@ -63,7 +63,7 @@ jobs:
 
       - name: Extract diff of the commit
         run: |
-          commit_id={{ env.COMMIT_ID }}
+          commit_id=$COMMIT_ID
           git diff $commit_id^ > diff_${commit_id}.txt
 
       - name: Save diff as artifact
