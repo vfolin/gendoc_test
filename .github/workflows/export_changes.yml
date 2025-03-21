@@ -87,3 +87,7 @@ jobs:
         run: |
             aws s3 cp repo_structure_${{ env.COMMIT_ID }}.txt s3://${{ vars.BUCKET_NAME }}/codeChanges/$COMMIT_DATE/repo_structure_${{ env.COMMIT_ID }}.txt
             aws s3 cp diff_${{ env.COMMIT_ID }}.txt s3://${{ vars.BUCKET_NAME }}/codeChanges/$COMMIT_DATE/diff_${{ env.COMMIT_ID }}.txt
+
+      - name: Upload README.md to S3
+        run: |
+          aws s3 cp ${{ vars.README_PATH }} s3://${{ vars.BUCKET_NAME }}/documentation/README.md
