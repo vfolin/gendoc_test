@@ -49,6 +49,7 @@ jobs:
 
       - name: Upload code to S3
         run: |
+          aws s3 rm s3://${{ vars.BUCKET_NAME }}/code/ --recursive 
           aws s3 cp . s3://${{ vars.BUCKET_NAME }}/code/ --recursive \
             --exclude ".git/*" \
             --exclude ".github/*" \
