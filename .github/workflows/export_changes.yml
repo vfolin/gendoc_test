@@ -91,3 +91,10 @@ jobs:
       - name: Upload README.md to S3
         run: |
           aws s3 cp ${{ vars.README_PATH }} s3://${{ vars.BUCKET_NAME }}/documentation/README.md
+
+      - name: Upload code to S3
+        run: |
+          aws s3 cp . s3://${{ vars.BUCKET_NAME }}/code/ --recursive \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "README.md" 
