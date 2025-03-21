@@ -40,6 +40,13 @@ jobs:
           echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
           echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
 
+      - name: Upload code to S3
+        run: |
+          aws s3 cp . s3://${{ vars.BUCKET_NAME }}/code/ --recursive \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "README.md" 
+
       - name: Generate repository structure
         run: |
           git ls-tree -r --name-only HEAD > repo_structure_${{ env.COMMIT_ID }}.txt  
@@ -91,10 +98,3 @@ jobs:
       - name: Upload README.md to S3
         run: |
           aws s3 cp ${{ vars.README_PATH }} s3://${{ vars.BUCKET_NAME }}/documentation/README.md
-
-      - name: Upload code to S3
-        run: |
-          aws s3 cp . s3://${{ vars.BUCKET_NAME }}/code/ --recursive \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude "README.md" 
