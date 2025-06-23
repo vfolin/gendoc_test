@@ -19,3 +19,5 @@ models:
     description: The percentage of orders that are fulfilled correctly without errors.
   - name: kpi_customer_segmentation
     description: Analyzing the distribution of customers.
+  - name: kpi_total_customers
+    description: The total number of customers in the database, partitioned by date.
