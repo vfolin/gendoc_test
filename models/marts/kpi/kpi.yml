@@ -21,3 +21,5 @@ models:
     description: Analyzing the distribution of customers.
   - name: kpi_total_customers
     description: The total number of customers in the database, partitioned by date.
+  - name: kpi_average_order_value
+    description: The average value of customer orders per day.
