@@ -1,0 +1,22 @@
+name: Use Export Changes
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  call-export:
+    uses: docSmithAction/.github/workflows/export_changes.yml@main
+    with:
+      bucket_name: "data-it-ena-gendoc-staging/testExportChangesGitHubAction"
+      aws_region: "eu-west-1"
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

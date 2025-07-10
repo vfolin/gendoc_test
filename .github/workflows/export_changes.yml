@@ -1,14 +1,14 @@
 name: Export Changes
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '.github/workflows/**'
-  pull_request:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
+#    paths-ignore:
+#      - '.github/workflows/**'
+#  pull_request:
+#    branches:
+#      - main
   workflow_dispatch:
 
 jobs:
