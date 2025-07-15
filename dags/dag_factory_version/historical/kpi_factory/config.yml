@@ -104,6 +104,13 @@ kpi_orders:
           FROM ANALYTICS.ANALYTICS_ENGINEERING_DATA_PIPELINE.KPI_ORDER_ACCURACY_RATE
           WHERE ORDER_ACCURACY_RATE > 50 );
       dependencies: [ compute_order_accuracy_rate ]
+    compute_avarage_order_value:
+      operator: airflow_dbt.operators.dbt_operator.DbtRunOperator
+      models: 'kpi_average_order_value'
+      vars: { 'groupBy': "{{ params.groupBy }}", 'filters': "{{ params.filters }}", 'partitionByDate': "{{ params.partitionByDate }}" }
+      trigger_rule: 'all_done'
+      dependencies: [ compute_order_accuracy_rate ]
+    check_average_order_value:
 kpi_customers:
   default_args:
     owner: 'v.folin@reply.it'

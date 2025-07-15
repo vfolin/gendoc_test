@@ -17,6 +17,8 @@ jobs:
     with:
       bucket_name: "data-it-ena-gendoc-staging/testExportChangesGitHubAction"
       aws_region: "eu-west-1"
+      include_code: "dags/*, data_ingestion/*, macros/*, models/*, seeds/*, snapshots/*, tests/*"
+      include_documentation: "README.md"
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
