@@ -19,7 +19,7 @@ jobs:
       aws_region: 'eu-west-1'
       include_code: ''
       include_documentation: '.md'
-      exclude_code: '.git/, .github/, .md, analyses, target, docs, .gitignore, .gcloudignore'
+      exclude_code: '.git, .github, .md, analyses, target, docs, .gitignore, .gcloudignore'
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
