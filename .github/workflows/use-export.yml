@@ -15,7 +15,7 @@ jobs:
   call-export:
     uses: vfolin/docSmithAction/.github/workflows/export_changes.yml@main
     with:
-      bucket_name: 'data-it-ena-gendoc-staging/testExportChangesGitHubAction'
+      bucket_name: 'data-it-ena-gendoc-staging'
       aws_region: 'eu-west-1'
       include_code: 'dags, data_ingestion, macros, models, seeds, snapshots, tests'
       include_documentation: 'README.md'
